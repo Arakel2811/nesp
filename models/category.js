@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: ''
     },
+    parentId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 'null'
+    },
     created_at: {
       allowNull: false,
       defaultValue: now,
@@ -36,6 +41,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Category.associate = function (models) {
     Category.hasMany(models.Post, { as: 'posts', foreignKey: 'category_id' });
+    Category.belongsTo(models.Category, { as: 'parent', foreignKey: 'category_id' }); // one parent (if exists)
+    Category.hasMany(models.Category, { as: 'children', foreignKey: 'category_id' }); // many childs
   };
 
   return Category;

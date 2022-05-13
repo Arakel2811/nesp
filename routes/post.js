@@ -9,6 +9,7 @@ const auth = require('./../utilities/auth');
 
 
 router.get('/', postController.list);
+router.get('/:catId', postController.getPostByCatId);
 router.post('/', auth, imageUpload.array('images', appConfigs.post.image_upload_max_count),
     postController.create);
 router.put('/:postId', auth, imageUpload.array('images', appConfigs.post.image_upload_max_count),

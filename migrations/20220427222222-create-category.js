@@ -15,6 +15,14 @@ module.exports = {
         allowNull: false,
         // defaultValue: ''
       },
+      parentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'categories',
+          key: 'id'
+        }
+      },
       created_at: {
         allowNull: false,
         // defaultValue: now,

@@ -124,6 +124,55 @@ module.exports = {
             });
         }
     },
+    getPostByCatId: async (req, res) => {
+        console.log(req.params.catId, "---------------------------------------------------------------", 12345);
+
+        try {
+            const category = await Category.findOne({ where: { id: req.params.catId }, attributes : ['id', 'name', 'parentId'], }, { raw: true });
+            console.log("category ==== > ", category);
+            console.log("category..... ==== > ", category.dataValues.parentId);
+
+            //
+            //const address = await addressModel.findAll({ where: { id: { [Op.in]: ids } }, include: [{ model: streetModel, as: "addressStreet" },
+            //
+
+                const categories = await Category.findAndCountAll(
+        { where:
+                    { [Op.or] : [
+                            { id: req.params.catId },
+                            { parentId: req.params.catId }
+                        ]
+                    },
+                attributes : ['id', 'name', 'parentId'],
+                // offset: 10,
+                // limit: 2,
+                raw: true,
+                logging: console.log
+            });
+            console.log(categories);
+            if (!categories) {
+                return res.status(403).json({
+                    error: "Category not found!"
+                });
+            }
+            const Ids = [];
+            categories.rows.forEach(function (rows) {
+                if(!Ids.includes(rows.id)) {
+                    Ids.push(rows.id);
+                }
+                // if(!Ids.includes(rows.parentId)) {
+                //     Ids.push(rows.parentId);
+                // }
+            })
+            console.log("Ids = ", Ids);
+
+            return res.status(200).json(categories);
+        } catch (e) {
+            console.log(e);
+        }
+
+
+    },
     create: async (req, res) => {
         if (!req.files || req.files.length === 0) {
             return res.status(403).json({
